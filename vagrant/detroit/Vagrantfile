@@ -1,11 +1,17 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "ubuntu-precise64-chef"
-  config.vm.box_url = "https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_chef-11.4.4.box"
+  config.vm.box = "ubuntu-precise64"
+  config.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box"
 
   config.vm.network :private_network, ip: "10.0.0.10"
   config.vm.hostname = "detroit"
+
+  config.vm.provider "virtualbox" do |box|
+    box.customize ["modifyvm", :id, "--memory", "2560"]
+  end
+
+  config.omnibus.chef_version = "11.4.0"
 
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = "../../"
@@ -19,6 +25,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     }
 
     chef.add_recipe "detroit::default"
-    chef.add_recipe "detroit::deploy"
   end
 end
