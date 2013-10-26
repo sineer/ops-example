@@ -4,17 +4,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu-precise64"
   config.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box"
 
+  # Sets the ip we'll use to access the box
   config.vm.network :private_network, ip: "10.0.0.10"
   config.vm.hostname = "detroit"
 
+  # Configures the amount of RAM
   config.vm.provider "virtualbox" do |box|
-    box.customize ["modifyvm", :id, "--memory", "2560"]
+    box.customize ["modifyvm", :id, "--memory", "1024"]
   end
 
+  # Specifies the chef version Opsworks is running
   config.omnibus.chef_version = "11.4.0"
 
+  # Chef related configs
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = "../../"
+    chef.log_level = :info
 
     chef.json = {
       "database" => {
@@ -24,6 +29,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       }
     }
 
+
     chef.add_recipe "detroit::default"
+
+    # Uses our development directory instead of deploying the app
+    # config.vm.synced_folder "~/dev/detroit", "/data/www"
+    chef.add_recipe "detroit::deploy"
   end
 end

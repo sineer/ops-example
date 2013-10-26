@@ -1,8 +1,8 @@
 # Deploys the given git project to the deploy directory.
 git "/data/www" do
-  repository "git@github.com:brunobuccolo/detroit.git"
-  revision "master"
+  repository "https://github.com/brunobuccolo/detroit-example.git"
+  revision "production"
   action :sync
-  user "nginx"
-  group "nginx"
+  user "root"
+  group "root"
 end
