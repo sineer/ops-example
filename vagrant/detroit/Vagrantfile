@@ -21,19 +21,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.cookbooks_path = "../../"
     chef.log_level = :info
 
+    # Sample config attribute (to be used on nginx.conf.erb)
     chef.json = {
-      "database" => {
-        "user" => "root",
-        "password" => "",
-        "host" => "10.0.1.166"
+      "nginx" => {
+        "worker_processes" => 1
       }
     }
 
-
+    # Chef, use this recipe:
     chef.add_recipe "detroit::default"
 
     # Uses our development directory instead of deploying the app
-    # config.vm.synced_folder "~/dev/detroit", "/data/www"
-    chef.add_recipe "detroit::deploy"
+    config.vm.synced_folder "~/dev/detroit", "/data/www"
+
+    # This would deploy the app exactly the way it's done in Opsworks
+    # chef.add_recipe "detroit::deploy"
   end
 end
